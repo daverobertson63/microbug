@@ -1,0 +1,101 @@
+Pycc python subset - supported Grammar
+--------------------------------------
+
+program : statementlist
+statementlist : statement statementlist?
+block : INDENT statementlist DEDENT
+statement : EOL
+          | print_statement
+          | fullexpression
+          | while_statement
+          | if_statement
+          | for_statement
+          | import_statement
+          | def_statement
+          | yield_statement
+          | assignment_statement
+
+while_statement : WHILE fullexpression COLON EOL block
+
+if_statement : IF fullexpression COLON EOL block if_trailer?
+if_trailer : elif_clauses
+           | else_clause
+elif_clauses : elif_clause if_trailer?
+elif_clause : ELIF fullexpression COLON EOL block
+else_clause : ELSE COLON EOL block
+
+
+print_statement | PRINT fullexpression
+yield_statement | YIELD fullexpression
+assignment_statement | identifier EQUALS fullexpression
+
+import_statement : (FROM identifier)? IMPORT identifier
+                 | IMPORT identifier
+
+for_statement : FOR identifier IN fullexpression COLON EOL block
+def_statement : DEF identifier PARENL ident_list? PARENR COLON EOL block
+
+fullexpression : or_expression
+or_expression  : and_expression (OR or_expression)?
+and_expression : not_expression (AND not_expression)?
+not_expression : comparison | NOT not_expression
+comparison     : expression (COMP_OP expression)?
+
+expression : arith_expression
+           | arith_expression TIMES expression
+           | arith_expression DIVIDE expression
+
+arith_expression : expression_atom
+                 | expression_atom PLUS arith_expression
+                 | expression_atom MINUS arith_expression
+
+expression_atom : MINUS? number
+                | IDENTIFIER
+                | STRING
+                | boolean
+                | func_call
+                | PARENL fullexpression PARENR
+
+boolean : TRUE
+        | FALSE
+
+func_call : IDENTIFIER PARENL expr_list? PARENR
+
+expr_list : expression (COMMA expr_list)?
+ident_list : identifier (COMMA ident_list)?
+
+DEF        = 'def'
+ELIF       = 'elif'
+ELSE       : 'else'
+FOR        : 'for'
+FROM       : 'from'
+IF         : 'if'
+IMPORT     : 'import'
+IN         : 'in'
+PRINT      : 'print'
+WHILE      : 'while'
+YIELD      : 'yield'
+
+FALSE      : 'False'
+TRUE       : 'True'
+
+COLON      = ':'
+COMMA      = ','
+DIVIDE     = '/'
+EQUALS     : '='
+MINUS      : '-'
+PARENL     : '('
+PARENR     : ')'
+PLUS       : '+'
+TIMES      : '*'
+EOL        : '\n'
+COMP_OP    : '(<|>|==|>=|<=|<>|!=|in|not +in|is|is +not)'
+IDENTIFIER : '[a-zA-Z_][a-zA-Z0-9_]*'
+NUMBER     : '[0-9]+'
+STRING     : '"[^"]*"'
+           | "'[^']*'"
+
+INDENT     : Inserted when the lexer detects the user has indented their text
+DEDENT     : Inserted when the lexer has dedented their text. If the user has
+             skipped a number of levels, an appropriate number of dedents are
+             emitted.
