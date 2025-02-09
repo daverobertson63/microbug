@@ -5,6 +5,9 @@ void sleep(int time) { pause(time); }         // POWER
 int sum(int a, int b, int c) { return a+b+c; } // COMPILER SUPPORT
 
 
+
+
+
 void setup()
 {
     microbug_setup();
@@ -12,29 +15,11 @@ void setup()
 
 void user_program()
 {
-    
-      while(1) {
-        
-         eye_on("A");
-         eye_on("B");        
-        scroll_string_image( StringImage( "DAVE IS GREAT" ),100 );
-        
-        for (int i = 1; i < 10; ++i) {
-		    delay(100);
-         eye_off("A");
-         eye_off("B");        
-        delay(100);    
-        eye_on("A");
-         eye_on("B");        
-	      }
-        
-        
-         
-      }
-
-      
-      
-      
+    while(1) {// Forever
+scroll_string_image( StringImage( "Davy Is Great" ),50 );
+delay( 70 );
+}
+;
 }
 
 int main(void)
@@ -46,16 +31,16 @@ int main(void)
 #endif
         setup(); // Switches on "eyes", and switches to bootloader if required
         enable_power_optimisations();
-        set_eye('L', HIGH);  // Switch off eyes if bootloader not required
-        set_eye('R', HIGH);
+set_eye('L', LOW);  // Switch off eyes if bootloader not required
+set_eye('R', LOW);
         pause(dal_pre_pause_time);
         user_program();
         //        if (serialEventRun) serialEventRun();
         if (dal_screen_hold_time) { 
             pause(dal_screen_hold_time);
             clear_display();
-            eye_on("A");
-            eye_on("B");
+            eye_off("A");
+            eye_off("B");
             while (true) {
                 sleep(1000);
             }
